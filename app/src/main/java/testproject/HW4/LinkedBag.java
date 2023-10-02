@@ -1,5 +1,5 @@
 public final class LinkedBag<T> implements BagInterface<T> {
-    private Node firstNode;       // Reference to first node
+    private @Nullable Node firstNode;       // Reference to first node
     private int numberOfEntries;
 
     public LinkedBag() {
@@ -82,7 +82,7 @@ public final class LinkedBag<T> implements BagInterface<T> {
      * @return Either the removed entry, if the removal was successful, or null.
      */
     public T remove() {
-        T result = null;
+        @Nullable T result = null;
         if (firstNode != null) {
             result = firstNode.data;
             firstNode = firstNode.next; // Remove first node from chain
@@ -131,7 +131,7 @@ public final class LinkedBag<T> implements BagInterface<T> {
         // end getFrequencyOf
     }
 
-    private int getfrequencyother(T anEntry,Node currentNode ){
+    private int getfrequencyother(@Nullable T anEntry,Node currentNode ){
         //Node currentNode2 = new Node(anEntry);
         if((currentNode == null)){
             return 0;
@@ -153,7 +153,7 @@ public final class LinkedBag<T> implements BagInterface<T> {
      * @param anEntry The entry to locate.
      * @return True if the bag contains anEntry, or false otherwise.
      */
-    public boolean contains(T anEntry) {
+    public boolean contains(@Nullable T anEntry) {
         boolean found = false;
         Node currentNode = firstNode;
 
@@ -170,7 +170,7 @@ public final class LinkedBag<T> implements BagInterface<T> {
     // Locates a given entry within this bag.
     // Returns a reference to the node containing the entry, if located,
     // or null otherwise.
-    private Node getReferenceTo(T anEntry) {
+    private Node getReferenceTo(@Nullable T anEntry) {
         boolean found = false;
         Node currentNode = firstNode;
 
@@ -188,11 +188,11 @@ public final class LinkedBag<T> implements BagInterface<T> {
         private T data; // Entry in bag
         private Node next; // Link to next node
 
-        private Node(T dataPortion) {
+        private Node(@Initialized @NonNull T dataPortion) {
             this(dataPortion, null);
         } // end constructor
 
-        private Node(T dataPortion, Node nextNode) {
+        private Node(@Initialized @NonNull T dataPortion, @Initialized @NonNull Node nextNode) {
             data = dataPortion;
             next = nextNode;
         } // end constructor

@@ -1,7 +1,13 @@
+// import org.checkerframework.checker.initialization.qual.Initialized;
+// import org.checkerframework.checker.initialization.qual.UnderInitialization;
+// import org.checkerframework.checker.nullness.qual.NonNull;
+// import org.checkerframework.checker.nullness.qual.Nullable;
+// import org.checkerframework.checker.initialization.qual.Uninitialized;
+
 class LList<T> implements ListInterface<T> {
 
-    private Node firstNode;  // Reference to first node of chain
-    private int numberOfEntries;
+    private @Uninitialized Node firstNode;  // Reference to first node of chain
+    private @Initialized int numberOfEntries;
 
     public LList() {
         initializeDataFields();
@@ -15,7 +21,7 @@ class LList<T> implements ListInterface<T> {
     
     // Initialize the class's data fields to indicate an empty list.
     private void initializeDataFields() {
-        firstNode = null;
+        firstNode = new Node(null);
         numberOfEntries = 0;
     }
 
@@ -156,7 +162,7 @@ class LList<T> implements ListInterface<T> {
 
     private class Node {
 
-        public Object previous;
+        public @Uninitialized Object previous;
         private T data; // entry in bag
         private Node next; // link to next node
 
@@ -167,6 +173,7 @@ class LList<T> implements ListInterface<T> {
         private Node(T dataPortion, Node nextNode) {
             data = dataPortion;
             next = nextNode;
+            previous = new Object();
         } // end constructor
 
         private T getData() {
@@ -262,9 +269,9 @@ class LList<T> implements ListInterface<T> {
     /** Reverse the order of items in a list.
      */
     public void reverse() {
-        Node previous = null;
+        @Initialized @NonNull Node previous = null;
         Node current = firstNode;
-        Node next = null;
+        @Initialized @NonNull Node next = null;
         while (current != null) {
             next = current.next;
             current.next = previous;
@@ -278,7 +285,7 @@ class LList<T> implements ListInterface<T> {
     /** Cycle the first item to the end of the list.
      */
     public void cycle(){
-        Node newnode = firstNode;
+        @Initialized @NonNull Node newnode = firstNode;
         firstNode = getNodeAt(2);
         numberOfEntries--;
         Node lastNode = getNodeAt(numberOfEntries);

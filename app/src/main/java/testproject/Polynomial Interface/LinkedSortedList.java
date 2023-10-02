@@ -1,12 +1,9 @@
-/*
-me and Sree chityala worked together on this homework. we finished the assignment together
-which is why you might see similarities in code :)
-*/
+
 import java.util.Iterator;
 
 public class LinkedSortedList<T extends Comparable<? super T>> implements SortedListInterface<T>, Iterable<T>
 {
-   private Node firstNode;       // Reference to first node of chain
+   private @Initialized @NonNull Node firstNode;       // Reference to first node of chain
    private int numberOfEntries;
    
    public LinkedSortedList()
@@ -90,7 +87,7 @@ public class LinkedSortedList<T extends Comparable<? super T>> implements Sorted
    // List operations
    public T getEntry(int givenPosition)
    {
-      T result = null;                          // Result to return
+      @Nullable T result = null;                          // Result to return
       
       if ((givenPosition >= 1) && (givenPosition <= numberOfEntries))
       {
@@ -103,7 +100,7 @@ public class LinkedSortedList<T extends Comparable<? super T>> implements Sorted
    
    public T remove(int givenPosition)
    {
-      T result = null;                           // Return value
+      @Nullable T result = null;                           // Return value
 
       if ((givenPosition >= 1) && (givenPosition <= numberOfEntries))
       {
@@ -132,7 +129,7 @@ public class LinkedSortedList<T extends Comparable<? super T>> implements Sorted
 
    public final void clear() 
    {
-      firstNode = null;
+      @Initialized @NonNull firstNode = null;
       numberOfEntries = 0;
    } // end clear
 
@@ -195,7 +192,7 @@ public class LinkedSortedList<T extends Comparable<? super T>> implements Sorted
    private Node getNodeBefore(T anEntry)
    {
       Node currentNode = firstNode;
-      Node nodeBefore = null;
+      @Initialized @NonNull Node nodeBefore = null;
       
       while ( (currentNode != null) &&
              (anEntry.compareTo(currentNode.getData()) > 0) )
