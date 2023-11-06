@@ -1,11 +1,15 @@
-public final class LinkedBag<T> implements BagInterface<T> {
-    private @Nullable Node firstNode;       // Reference to first node
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+
+public final class LinkedBag<T> {
+    private @Nullable Node firstNode; // Reference to the first node
     private int numberOfEntries;
 
     public LinkedBag() {
         firstNode = null;
         numberOfEntries = 0;
-    } // end default constructor
+    }
 
     /**
      * Adds a new entry to this bag.
@@ -13,17 +17,16 @@ public final class LinkedBag<T> implements BagInterface<T> {
      * @param newEntry The object to be added as a new entry
      * @return True if the addition is successful, or false if not.
      */
-    public boolean add(T newEntry)         // OutOfMemoryError possible
+    public boolean add(T newEntry) 
     {
-        // Add to beginning of chain:
+        // Add to the beginning of the chain:
         Node newNode = new Node(newEntry);
-        newNode.next = firstNode; // Make new node reference rest of chain
-        // (firstNode is null if chain is empty)
-        firstNode = newNode;      // New node is at beginning of chain
+        newNode.next = firstNode; // Make the new node reference the rest of the chain
+        firstNode = newNode;      // New node is at the beginning of the chain
         numberOfEntries++;
 
         return true;
-    } // end add
+    } 
 
     /**
      * Retrieves all entries that are in this bag.
@@ -40,10 +43,10 @@ public final class LinkedBag<T> implements BagInterface<T> {
             result[index] = currentNode.data;
             index++;
             currentNode = currentNode.next;
-        } // end while
+        }
 
         return result;
-    } // end toArray
+    }
 
     /**
      * Sees whether this bag is empty.
@@ -51,9 +54,8 @@ public final class LinkedBag<T> implements BagInterface<T> {
      * @return True if this bag is empty, or false if not.
      */
     public boolean isEmpty() {
-
         return numberOfEntries == 0;
-    } // end isEmpty
+    }
 
     /**
      * Gets the number of entries currently in this bag.
@@ -61,64 +63,61 @@ public final class LinkedBag<T> implements BagInterface<T> {
      * @return The integer number of entries currently in this bag.
      */
     public int getCurrentSize() {
-      return getCurrentSize2(this.firstNode) ;
-    } // end getCur
-    // rentSize
-    //WRITE A PRIVATE RECURSIVE METHOD THAT RETURNS THE TOTAL NUMBER
-    //OF NODES (size of the bag)
-    private int getCurrentSize2(Node current2Node){
+        return getCurrentSizeRecursive(firstNode);
+    }
 
-        if (current2Node!= null){
-            return  1 + getCurrentSize2(current2Node.next);
-        }else{
-            return 0 ;
+    private int getCurrentSizeRecursive(@Nullable Node currentNode) {
+        if (currentNode == null) {
+            return 0;
+        } else {
+            return 1 + getCurrentSizeRecursive(currentNode.next);
         }
-
     }
 
     /**
      * Removes one unspecified entry from this bag, if possible.
      *
-     * @return Either the removed entry, if the removal was successful, or null.
+     * @return Either the removed entry if the removal was successful or null.
      */
-    public T remove() {
+    public @Nullable T remove() {
         @Nullable T result = null;
         if (firstNode != null) {
             result = firstNode.data;
-            firstNode = firstNode.next; // Remove first node from chain
+            firstNode = firstNode.next; // Remove the first node from the chain
             numberOfEntries--;
-        } // end if
+        }
 
         return result;
-    } // end remove
+    }
 
     /**
-     * Removes one occurrence of a given entry from this bag, if possible.
+     * Removes one occurrence of a given entry from this bag if possible.
      *
      * @param anEntry The entry to be removed.
      * @return True if the removal was successful, or false otherwise.
      */
-    public boolean remove(T anEntry) {
+    public boolean remove(@NonNull T anEntry) {
         boolean result = false;
         Node nodeN = getReferenceTo(anEntry);
 
-        if (nodeN != null) {
-            nodeN.data = firstNode.data; // Replace located entry with entry in first node
-                    firstNode = firstNode.next;  // Remove first node
+        if (nodeN != null && firstNode != null) {
+            nodeN.data = firstNode.data; // Replace located entry with entry in the first node
+            firstNode = firstNode.next; // Remove the first node
             numberOfEntries--;
             result = true;
-        } // end if
+        }
 
         return result;
-    } // end remove
+    }
 
     /**
      * Removes all entries from this bag.
      */
     public void clear() {
-        while (!isEmpty())
+        while (!isEmpty()) {
             remove();
-    } // end clear
+        }
+    }
 
     /**
      * Counts the number of times a given entry appears in this bag.
@@ -127,25 +126,25 @@ public final class LinkedBag<T> implements BagInterface<T> {
      * @return The number of times anEntry appears in this bag.
      */
     public int getFrequencyOf(T anEntry) {
-        return getfrequencyother(anEntry, firstNode);
-        // end getFrequencyOf
+        return getFrequencyOther(anEntry, firstNode);
     }
 
-    private int getfrequencyother(@Nullable T anEntry,Node currentNode ){
-        //Node currentNode2 = new Node(anEntry);
-        if((currentNode == null)){
-            return 0;
+    private int getFrequencyOther(T anEntry, @Nullable Node currentNode) {
+        if (currentNode == null) {
+            return 0; // The list is empty, so the entry is not found
         }
-        if (anEntry.equals(currentNode.data)){
-            return 1 + getfrequencyother(anEntry,currentNode.next);
-        }
-       else{
-            return getfrequencyother(anEntry, currentNode.next);
-        }
-    }
 
-    //WRITE A PRIVATE RECURSIVE METHOD THAT RETURNS TEH FREQUENCY OF
-    //AN ENTRY
+        if (anEntry == null) {
+            // Do something when anEntry is null
+        } else {
+            // Check if anEntry is not null before calling equals
+            if (anEntry.equals(currentNode.data)) {
+                return 1 + getFrequencyOther(anEntry, currentNode.next);
+            }
+        }
+        // Goes to the next node
+        return getFrequencyOther(anEntry, currentNode.next);
+    }
 
     /**
      * Tests whether this bag contains a given entry.
@@ -153,50 +152,57 @@ public final class LinkedBag<T> implements BagInterface<T> {
      * @param anEntry The entry to locate.
      * @return True if the bag contains anEntry, or false otherwise.
      */
-    public boolean contains(@Nullable T anEntry) {
+    public boolean contains(T anEntry) {
         boolean found = false;
         Node currentNode = firstNode;
-
+    
         while (!found && (currentNode != null)) {
-            if (anEntry.equals(currentNode.data))
+            if (anEntry != null && anEntry.equals(currentNode.data)) {
                 found = true;
-            else
+            } else {
                 currentNode = currentNode.next;
-        } // end while
-
+            }
+        }
+    
         return found;
-    } // end contains
+    }
 
-    // Locates a given entry within this bag.
-    // Returns a reference to the node containing the entry, if located,
-    // or null otherwise.
-    private Node getReferenceTo(@Nullable T anEntry) {
+    /**
+     * Locates a given entry within this bag.
+     * Returns a reference to the node containing the entry if located,
+     * or null otherwise.
+     *
+     * @param anEntry The entry to locate.
+     * @return The node containing the entry or null if not found.
+     */
+    private @Nullable Node getReferenceTo(@NonNull T anEntry) {
         boolean found = false;
         Node currentNode = firstNode;
-
+    
         while (!found && (currentNode != null)) {
-            if (anEntry.equals(currentNode.data))
+            if (anEntry.equals(currentNode.data)) {
                 found = true;
-            else
+            } else {
                 currentNode = currentNode.next;
-        } // end while
-
+            }
+        }
+    
         return currentNode;
-    } // end getReferenceTo
+    }
 
     private class Node {
-        private T data; // Entry in bag
-        private Node next; // Link to next node
+        private T data; // Entry in the bag
+        private @Nullable Node next; // Link to the next node
 
-        private Node(@Initialized @NonNull T dataPortion) {
+        private Node(T dataPortion) {
             this(dataPortion, null);
-        } // end constructor
+        }
 
-        private Node(@Initialized @NonNull T dataPortion, @Initialized @NonNull Node nextNode) {
+        private Node(T dataPortion, @Nullable Node nextNode) {
             data = dataPortion;
             next = nextNode;
-        } // end constructor
-    } // end Node
+        }
+    }
 
     public String toString() {
         T[] result = toArray();
@@ -211,15 +217,3 @@ public final class LinkedBag<T> implements BagInterface<T> {
         return res.toString();
     }
 }
-//question 1 and 2
- /**  By using the definition of Big Oh, show that n2 + 17n + 1 is O(n2).
-        We have to find a positive real number c and a positive integer N such that f(n) ≤ c g(n) for all n ≥ N, where
-  f (n)= n^2 +17n +1 and g(n) =n2 .Choose c = 5 and N = 1. We must show that n^2 + 17 n + 1 ≤ 5n2 if n ≥ 1 or
-  equivalently show that n2 + 12n + 1 ≤ 0 if n ≥ 1. But since n ≥ 1, n2 ≥ 1, which means that n2+17n+1 is O(n2)
-
-  Slide 9 in the lecture notes shows the relative magnitudes of common growth-rate functions. Indicate where the growth-rate function n2logn belongs in that ordering.
-  This is the table ordering
-  1 < (log(log n) < log n < log2 n < n < n log n  < n2  <  n3  <  2n < n!
-  If we were to add n2logn i would think that we would add it at
-  1 < (log(log n) < log n < log2 n < n < n log n <n2logn  < n2  <  n3  <  2n < n!
-*/
