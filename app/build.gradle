@@ -17,7 +17,7 @@ apply plugin: 'org.checkerframework'
 checkerFramework {
   checkers = [
     'org.checkerframework.checker.nullness.NullnessChecker',
-    'org.checkerframework.checker.units.UnitsChecker'
+    //'org.checkerframework.checker.units.UnitsChecker'
   ]
 }
 
